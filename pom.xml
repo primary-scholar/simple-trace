@@ -32,8 +32,9 @@
         <commons-collections4.version>4.4</commons-collections4.version>
         <lombok.version>1.18.30</lombok.version>
         <fastjson.version>1.2.83</fastjson.version>
-        <byte-buddy.version>1.14.9</byte-buddy.version>
+        <byte-buddy.version>1.15.10</byte-buddy.version>
 
+        <junit.version>4.12</junit.version>
     </properties>
 
     <dependencyManagement>
@@ -88,8 +89,14 @@
                 <artifactId>byte-buddy-agent</artifactId>
                 <version>${byte-buddy.version}</version>
             </dependency>
-        </dependencies>
 
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
     </dependencyManagement>
 
     <build>
