@@ -13,6 +13,7 @@
         <module>simple-trace-agent</module>
         <module>simple-trace-plugin</module>
         <module>simple-trace-common</module>
+        <module>simple-trace-core</module>
     </modules>
 
     <properties>
