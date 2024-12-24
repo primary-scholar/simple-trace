@@ -1,4 +1,4 @@
-package com.simple.trace.core;
+package com.simple.trace.core.loadclass;
 
 public class PrintSomethingInterceptor {
 
