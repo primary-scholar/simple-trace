@@ -37,6 +37,7 @@
 
     <build>
         <plugins>
+            <!-- 下面的 maven-shade-plugin 虽然是注释 掉的 ，但是不要删除，测试case中有说明 -->
             <!--<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
