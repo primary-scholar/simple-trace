@@ -31,6 +31,24 @@ public class ByteBuddyFieldAndMethodTest {
         System.out.println(newInstance.toString());
     }
 
+    /**
+     * Byte Buddy 以栈的形式组织覆写方法的规则。这意味着每当你注册一条用于覆写方法的新规则时，它将被压入栈顶，并且始终首先应用， 直到添加一条新规则
+     * <p>
+     * 因此下列中的三个 method 匹配规则依次入栈 从栈顶向下依次为
+     * 1.ElementMatchers.named("foo").and(ElementMatchers.takesArguments(1))
+     * 2.ElementMatchers.named("foo")
+     * 3.ElementMatchers.isDeclaredBy(Foo.class)
+     * 以Foo类为例 @see Foo
+     * 类中的三个方法，则按照1，2，3 的顺序进行匹配；
+     * bar() 方法，匹配时只有第三个规则 可以匹配；
+     * foo() 方法，匹配时 第二个规则可以匹配上，则应用第二个规则；
+     * foo(Object),匹配时，第一个规则可以匹配上，则应用第一个规则；
+     * 依次输出 one！，Two!，Three!
+     * 因此 你应该始终最后注册更具体的方法匹配器；
+     *
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
     @Test
     public void methodSelectTest() throws InstantiationException, IllegalAccessException {
         DynamicType.Unloaded<Foo> unloaded = new ByteBuddy().subclass(Foo.class)

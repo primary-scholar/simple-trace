@@ -1,5 +1,6 @@
 package com.simple.trace.core.loadclass;
 
+import com.simple.trace.core.loadclass.model.Bar;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
@@ -33,42 +34,14 @@ public class ByteBuddyLoadClassTest {
      */
     @Test
     public void modifyFunctionReturnValue() throws InstantiationException, IllegalAccessException, IOException {
-        DynamicType.Unloaded<PrintSomething> unloaded =
-                new ByteBuddy().subclass(PrintSomething.class).method(ElementMatchers.named("printFirst")).intercept(FixedValue.value("none argument")).method(ElementMatchers.named("printSecond")).intercept(FixedValue.value("one argument")).make();
+        DynamicType.Unloaded<Bar> unloaded =
+                new ByteBuddy().subclass(Bar.class).method(ElementMatchers.named("function")).intercept(FixedValue.value("none argument")).make();
         //unloaded.saveIn(new File("a"));
-        Class<? extends PrintSomething> aClass = unloaded.load(getClass().getClassLoader(),
+        Class<? extends Bar> aClass = unloaded.load(getClass().getClassLoader(),
                 ClassLoadingStrategy.Default.WRAPPER).getLoaded();
-        PrintSomething newInstance = aClass.newInstance();
-        newInstance.printFirst();
-        String s = newInstance.printSecond(null);
-        System.out.println(s);
+        Bar newInstance = aClass.newInstance();
+        String function = newInstance.function();
+        System.out.println(function);
     }
 
-    @Test
-    public void interceptWithStaticClass() throws InstantiationException, IllegalAccessException, IOException {
-        DynamicType.Unloaded<PrintSomething> unloaded =
-                new ByteBuddy().subclass(PrintSomething.class).method(ElementMatchers.named("printSecond")).intercept(MethodDelegation.to(PrintSomethingInterceptor.class)).make();
-        //unloaded.saveIn(new File("a"));
-        DynamicType.Loaded<PrintSomething> loaded = unloaded.load(getClass().getClassLoader(),
-                ClassLoadingStrategy.Default.WRAPPER);
-        Class<? extends PrintSomething> aClass = loaded.getLoaded();
-        PrintSomething newInstance = aClass.newInstance();
-        newInstance.printFirst();
-        String argument = newInstance.printSecond("argument");
-        System.out.println(argument);
-    }
-
-    @Test
-    public void interceptWithObject() throws InstantiationException, IllegalAccessException, IOException {
-        DynamicType.Unloaded<PrintSomething> unloaded =
-                new ByteBuddy().subclass(PrintSomething.class).method(ElementMatchers.named("printSecond")).intercept(MethodDelegation.to(new PrintSomethingInterceptorS())).make();
-        //unloaded.saveIn(new File("a"));
-        DynamicType.Loaded<PrintSomething> loaded = unloaded.load(getClass().getClassLoader(),
-                ClassLoadingStrategy.Default.WRAPPER);
-        Class<? extends PrintSomething> aClass = loaded.getLoaded();
-        PrintSomething newInstance = aClass.newInstance();
-        newInstance.printFirst();
-        String argument = newInstance.printSecond("argument");
-        System.out.println(argument);
-    }
 }
