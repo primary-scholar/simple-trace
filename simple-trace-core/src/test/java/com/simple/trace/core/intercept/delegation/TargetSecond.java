@@ -1,4 +1,4 @@
-package com.simple.trace.core.intercept;
+package com.simple.trace.core.intercept.delegation;
 
 public class TargetSecond {
     public static String intercept(String name) {

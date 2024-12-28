@@ -1,4 +1,4 @@
-package com.simple.trace.core.intercept;
+package com.simple.trace.core.intercept.delegation;
 
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.DynamicType;
@@ -7,7 +7,6 @@ import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.matcher.ElementMatchers;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
 
 public class ByteBuddyInterceptDelegationTest {
