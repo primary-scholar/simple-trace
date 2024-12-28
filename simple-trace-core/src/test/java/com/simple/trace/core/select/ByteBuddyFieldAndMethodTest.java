@@ -1,11 +1,16 @@
 package com.simple.trace.core.select;
 
 import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.ClassFileVersion;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
+import net.bytebuddy.implementation.DefaultMethodCall;
 import net.bytebuddy.implementation.FixedValue;
 import net.bytebuddy.matcher.ElementMatchers;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
 
 public class ByteBuddyFieldAndMethodTest {
 
@@ -21,12 +26,12 @@ public class ByteBuddyFieldAndMethodTest {
      * @throws IllegalAccessException
      */
     @Test
-    public void methodInterceptTest() throws InstantiationException, IllegalAccessException {
+    public void methodInterceptTest() throws InstantiationException, IllegalAccessException, IOException {
         DynamicType.Unloaded<Object> unloaded = new ByteBuddy().subclass(Object.class).name("com.simple.test.ObjectSub")
                 .method(ElementMatchers.named("toString").and(ElementMatchers.returns(String.class)))
                 .intercept(FixedValue.value("hello")).make();
+        //unloaded.saveIn(new File("a"));
         Class<?> loaded = unloaded.load(getClass().getClassLoader(), ClassLoadingStrategy.Default.WRAPPER).getLoaded();
-
         Object newInstance = loaded.newInstance();
         System.out.println(newInstance.toString());
     }
@@ -50,18 +55,43 @@ public class ByteBuddyFieldAndMethodTest {
      * @throws IllegalAccessException
      */
     @Test
-    public void methodSelectTest() throws InstantiationException, IllegalAccessException {
+    public void methodSelectTest() throws InstantiationException, IllegalAccessException, IOException {
         DynamicType.Unloaded<Foo> unloaded = new ByteBuddy().subclass(Foo.class)
                 .method(ElementMatchers.isDeclaredBy(Foo.class)).intercept(FixedValue.value("One!"))
                 .method(ElementMatchers.named("foo")).intercept(FixedValue.value("Two!"))
                 .method(ElementMatchers.named("foo").and(ElementMatchers.takesArguments(1))).intercept(FixedValue.value("Three!"))
                 .make();
+        //unloaded.saveIn(new File("a"));
         DynamicType.Loaded<Foo> load = unloaded.load(getClass().getClassLoader(), ClassLoadingStrategy.Default.WRAPPER);
-
         Foo foo = load.getLoaded().newInstance();
         System.out.println(foo.bar());
         System.out.println(foo.foo());
         System.out.println(foo.foo(new Object()));
+    }
+
+    /**
+     * 调用默认方法
+     * DefaultMethodCall.prioritize(First.class)
+     *
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IOException
+     */
+    @Test
+    public void defaultMethodTest() throws InstantiationException, IllegalAccessException, IOException {
+        DynamicType.Unloaded<Object> unloaded = new ByteBuddy(ClassFileVersion.JAVA_V8).subclass(Object.class)
+                .implement(First.class)
+                .implement(Second.class)
+                .method(ElementMatchers.named("info"))
+                .intercept(DefaultMethodCall.prioritize(First.class)).make();
+        //unloaded.saveIn(new File("a"));
+        DynamicType.Loaded<Object> load = unloaded.load(getClass().getClassLoader(), ClassLoadingStrategy.Default.WRAPPER);
+        Class<?> loaded = load.getLoaded();
+        Object newInstance = loaded.newInstance();
+        String firstInfo = ((First) newInstance).info();
+        System.out.println(firstInfo);
+        String secondInfo = ((Second) newInstance).info();
+        System.out.println(secondInfo);
     }
 
 }

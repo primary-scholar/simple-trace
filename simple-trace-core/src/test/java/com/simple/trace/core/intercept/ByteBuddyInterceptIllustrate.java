@@ -37,7 +37,7 @@ public class ByteBuddyInterceptIllustrate {
          */
 
         /**
-         * 
+         * 创建一个带有默认构造器的Object类型的子类，该构造器被定义为简单地调用它的直接父类构造器，Object类型默认的构造器
          */
         new ByteBuddy().subclass(Object.class, ConstructorStrategy.Default.IMITATE_SUPER_CLASS).make();
 
