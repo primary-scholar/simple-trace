@@ -4,12 +4,14 @@ import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import net.bytebuddy.implementation.MethodDelegation;
+import net.bytebuddy.implementation.bind.annotation.Pipe;
 import net.bytebuddy.matcher.ElementMatchers;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * MethodDelegation 提供了多个注解 进行委托方法的匹配，
@@ -41,7 +43,8 @@ public class ByteBuddyAnnotationTest {
      */
     @Test
     public void interceptSuperCall() throws InstantiationException, IllegalAccessException, IOException {
-        DynamicType.Unloaded<DataBase> unloaded = new ByteBuddy().subclass(DataBase.class).method(ElementMatchers.named("load")).intercept(MethodDelegation.to(SuperCallAnnotationInterceptor.class)).make();
+        DynamicType.Unloaded<DataBase> unloaded = new ByteBuddy().subclass(DataBase.class).method(ElementMatchers.named("load"))
+                .intercept(MethodDelegation.to(SuperCallAnnotationInterceptor.class)).make();
         //unloaded.saveIn(new File("a"));
         DynamicType.Loaded<DataBase> loaded = unloaded.load(getClass().getClassLoader(), ClassLoadingStrategy.Default.WRAPPER);
         Class<? extends DataBase> aClass = loaded.getLoaded();
@@ -59,7 +62,8 @@ public class ByteBuddyAnnotationTest {
      */
     @Test
     public void interceptSuper() throws InstantiationException, IllegalAccessException, IOException {
-        DynamicType.Unloaded<DataBase> unloaded = new ByteBuddy().subclass(DataBase.class).method(ElementMatchers.named("load")).intercept(MethodDelegation.to(SuperAnnotationInterceptor.class)).make();
+        DynamicType.Unloaded<DataBase> unloaded = new ByteBuddy().subclass(DataBase.class).method(ElementMatchers.named("load"))
+                .intercept(MethodDelegation.to(SuperAnnotationInterceptor.class)).make();
         //unloaded.saveIn(new File("a"));
         DynamicType.Loaded<DataBase> loaded = unloaded.load(getClass().getClassLoader(), ClassLoadingStrategy.Default.WRAPPER);
         Class<? extends DataBase> aClass = loaded.getLoaded();
@@ -80,7 +84,8 @@ public class ByteBuddyAnnotationTest {
      */
     @Test
     public void interceptRuntimeType() throws InstantiationException, IllegalAccessException, IOException {
-        DynamicType.Unloaded<Foo> unloaded = new ByteBuddy().subclass(Foo.class).method(ElementMatchers.named("info")).intercept(MethodDelegation.to(RuntimeTypeAnnotationInterceptor.class)).make();
+        DynamicType.Unloaded<Foo> unloaded = new ByteBuddy().subclass(Foo.class).method(ElementMatchers.named("info"))
+                .intercept(MethodDelegation.to(RuntimeTypeAnnotationInterceptor.class)).make();
         //unloaded.saveIn(new File("a"));
         DynamicType.Loaded<Foo> loaded = unloaded.load(getClass().getClassLoader(), ClassLoadingStrategy.Default.WRAPPER);
         Class<? extends Foo> aClass = loaded.getLoaded();
@@ -89,5 +94,32 @@ public class ByteBuddyAnnotationTest {
         System.out.println(hello);
         Integer info = newInstance.info(10);
         System.out.println(info);
+    }
+
+    /**
+     * 通过使用@Pipe注解，你可以将一个拦截的方法调用转发到另一个对象,因为@Pipe 注解没有与MethodDelegation一起预先注册，所以这里需要手动注册
+     * MethodDelegation.withDefaultConfiguration().withBinders(Pipe.Binder.install(Function.class))
+     * .to(new PipeAnnotationInterceptor(new DataBase()))
+     * <p>
+     * 这里 我们只转发了我们本地创建的实例的调用,通过子类化一个类型来拦截一个方法的优势在于，这种方法允许增强一个存在的实例。
+     * 此外，你通常会在实例级别注册拦截器，而不是在类级别注册一个静态拦截器; new PipeAnnotationInterceptor(new DataBase())
+     * <p>
+     * 这里是委托给了实例对象 new PipeAnnotationInterceptor(new DataBase())
+     *
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IOException
+     */
+    @Test
+    public void interceptPipe() throws InstantiationException, IllegalAccessException, IOException {
+        DynamicType.Unloaded<DataBase> unloaded = new ByteBuddy().subclass(DataBase.class).method(ElementMatchers.named("load"))
+                .intercept(MethodDelegation.withDefaultConfiguration().withBinders(Pipe.Binder.install(Function.class))
+                        .to(new PipeAnnotationInterceptor(new DataBase()))).make();
+        //unloaded.saveIn(new File("a"));
+        DynamicType.Loaded<DataBase> loaded = unloaded.load(getClass().getClassLoader(), ClassLoadingStrategy.Default.WRAPPER);
+        Class<? extends DataBase> aClass = loaded.getLoaded();
+        DataBase newInstance = aClass.newInstance();
+        List<String> world = newInstance.load("world");
+        System.out.println(world);
     }
 }
