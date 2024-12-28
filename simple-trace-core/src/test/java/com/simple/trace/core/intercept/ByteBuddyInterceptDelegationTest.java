@@ -7,6 +7,7 @@ import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.matcher.ElementMatchers;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
 
 public class ByteBuddyInterceptDelegationTest {
@@ -57,41 +58,19 @@ public class ByteBuddyInterceptDelegationTest {
         System.out.println(world);
     }
 
+
     /**
-     * 委托方法的选择 MethodDelegation.to()
-     * MethodDelegation 提供了多个注解 进行委托方法的匹配，
-     * 1.@Argument;
-     * 2.@AllArguments;
-     * 3.@This;
-     * 4.@Origin;
-     * 1.默认使用 @argument 注解的行为进行方法的匹配(如果Target 中没有明确使用注解)
-     * source：function(Object oo,Object os) ---> target: anyName(@Argument(0) Object oo,@Argument(1) Object os)
-     * ByteBuddy 选择 target 中的方法时，会根据source function() 方法中给定的 参数类型，顺序和个数，匹配target中 参数类型，顺序和个数一致的方法；
-     * 2.@AllArguments 使用该注解的参数，则要求 参数必须是数组，并且数组参数完全匹配；byte buddy 在每次调用时 都会复制一份参数到目标方法上；
-     * 3.@This; 使用该注解，表明 委托代理的 target 是实例(不能是静态类)，并且是 target 当前实例；使用@This注解的一个典型原因是获取一个实例字段的访问权限
-     * 4.@Origin;
+     * 委托实例对象 MethodDelegation.to(new TargetThird())) TargetThird 类中是非静态方法，否者这会委托到 Object.toString()
+     * 这时 方法委托选择和 静态类一致；
      *
      * @throws InstantiationException
      * @throws IllegalAccessException
      * @throws IOException
      */
     @Test
-    public void interceptMethodSelect() throws InstantiationException, IllegalAccessException, IOException {
-        DynamicType.Unloaded<Source> unloaded = new ByteBuddy().subclass(Source.class)
-                .method(ElementMatchers.named("hello")).intercept(MethodDelegation.to(TargetSecond.class)).make();
-        //unloaded.saveIn(new File("a"));
-        DynamicType.Loaded<Source> loaded = unloaded.load(getClass().getClassLoader(),
-                ClassLoadingStrategy.Default.WRAPPER);
-        Class<? extends Source> aClass = loaded.getLoaded();
-        Source newInstance = aClass.newInstance();
-        String world = newInstance.hello("world");
-        System.out.println(world);
-    }
-
-    @Test
     public void interceptWithObject() throws InstantiationException, IllegalAccessException, IOException {
         DynamicType.Unloaded<Source> unloaded = new ByteBuddy().subclass(Source.class)
-                .method(ElementMatchers.named("hello")).intercept(MethodDelegation.to(new TargetSecond())).make();
+                .method(ElementMatchers.named("hello")).intercept(MethodDelegation.to(new TargetThird())).make();
         //unloaded.saveIn(new File("a"));
         DynamicType.Loaded<Source> loaded = unloaded.load(getClass().getClassLoader(),
                 ClassLoadingStrategy.Default.WRAPPER);
