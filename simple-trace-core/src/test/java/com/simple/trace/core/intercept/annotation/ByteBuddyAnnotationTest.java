@@ -22,6 +22,7 @@ import java.util.function.Function;
  * 5.@SuperCall
  * 6.@Super
  * 7.@RuntimeType
+ * 8.@Pipe
  * 1.默认使用 @argument 注解的行为进行方法的匹配(如果Target 中没有明确使用注解)
  * source：function(Object oo,Object os) ---> target: anyName(@Argument(0) Object oo,@Argument(1) Object os)
  * ByteBuddy 选择 target 中的方法时，会根据source function() 方法中给定的 参数类型，顺序和个数，匹配target中 参数类型，顺序和个数一致的方法；
@@ -31,6 +32,7 @@ import java.util.function.Function;
  * 5.@SuperCall 在intercept中调用目标类的方法
  * 6.@Super 通过注入目标对象。然后调用目标对象的方法
  * 7.@RuntimeType 注解是以放弃类型安全检查,进行方法匹配 @see interceptRuntimeType()
+ * 8.@Pipe 可以将一个拦截的方法调用转发到另一个对象
  */
 public class ByteBuddyAnnotationTest {
 
