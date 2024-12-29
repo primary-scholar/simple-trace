@@ -1,4 +1,4 @@
-package com.simple.trace.core.select;
+package com.simple.trace.core.intercept.select;
 
 public class Foo {
 

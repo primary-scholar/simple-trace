@@ -1,16 +1,20 @@
-package com.simple.trace.core.select;
+package com.simple.trace.core.intercept.select;
 
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.ClassFileVersion;
+import net.bytebuddy.description.modifier.ModifierContributor;
+import net.bytebuddy.description.modifier.Visibility;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
+import net.bytebuddy.dynamic.scaffold.subclass.ConstructorStrategy;
 import net.bytebuddy.implementation.DefaultMethodCall;
 import net.bytebuddy.implementation.FixedValue;
+import net.bytebuddy.implementation.MethodCall;
 import net.bytebuddy.matcher.ElementMatchers;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class ByteBuddyFieldAndMethodTest {
 
@@ -93,5 +97,6 @@ public class ByteBuddyFieldAndMethodTest {
         String secondInfo = ((Second) newInstance).info();
         System.out.println(secondInfo);
     }
+
 
 }
