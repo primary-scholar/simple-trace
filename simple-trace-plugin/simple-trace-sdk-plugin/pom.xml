@@ -2,19 +2,19 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.simple.trace</groupId>
-        <artifactId>simple-trace</artifactId>
+        <groupId>com.simple.trace.plugin</groupId>
+        <artifactId>simple-trace-plugin</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.simple.trace.plugin</groupId>
-    <artifactId>simple-trace-plugin</artifactId>
+    <groupId>com.simple.trace.sdk.plugin</groupId>
+    <artifactId>simple-trace-sdk-plugin</artifactId>
     <packaging>pom</packaging>
 
-    <name>simple-trace-plugin</name>
+    <name>simple-trace-sdk-plugin</name>
     <url>http://maven.apache.org</url>
     <modules>
-        <module>simple-trace-sdk-plugin</module>
+        <module>simple-springmvc-plugin</module>
     </modules>
 
     <properties>
@@ -25,6 +25,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

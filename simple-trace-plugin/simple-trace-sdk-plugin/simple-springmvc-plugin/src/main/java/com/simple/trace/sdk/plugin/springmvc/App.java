@@ -1,4 +1,4 @@
-package com.simple.trace.plugin;
+package com.simple.trace.sdk.plugin.springmvc;
 
 /**
  * Hello world!
