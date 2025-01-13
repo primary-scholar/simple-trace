@@ -15,6 +15,7 @@
     <url>http://maven.apache.org</url>
     <modules>
         <module>simple-springmvc-plugin</module>
+        <module>simple-httpclient-plugin</module>
     </modules>
 
     <properties>
@@ -25,7 +26,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

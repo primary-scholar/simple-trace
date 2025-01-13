@@ -2,20 +2,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.simple.trace</groupId>
-        <artifactId>simple-trace</artifactId>
+        <groupId>com.simple.trace.sdk.plugin</groupId>
+        <artifactId>simple-trace-sdk-plugin</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.simple.trace.plugin</groupId>
-    <artifactId>simple-trace-plugin</artifactId>
-    <packaging>pom</packaging>
+    <groupId>com.simple.trace.httpclient.plugin</groupId>
+    <artifactId>simple-httpclient-plugin</artifactId>
+    <packaging>jar</packaging>
 
-    <name>simple-trace-plugin</name>
+    <name>simple-httpclient-plugin</name>
     <url>http://maven.apache.org</url>
-    <modules>
-        <module>simple-trace-sdk-plugin</module>
-    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -23,9 +20,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.simple.trace.core</groupId>
-            <artifactId>simple-trace-core</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.14</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

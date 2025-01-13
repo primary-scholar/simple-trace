@@ -23,7 +23,8 @@ import java.security.ProtectionDomain;
  * @see Foo
  * @see PlainMainClass
  * 五个类复制到(java 路径下)
- * 2.按照 pom.xml 文件中maven-shade-plugin 插件中的配置 执行 打包命令 mvn clean package -DskipTests
+ * 2.按照 pom.xml 文件中maven-shade-plugin 插件中的配置(具体的 main 类 和 premain 类要依据具体的类限定名进行调整)
+ * 执行 打包命令 mvn clean package -DskipTests
  * 之后 就可通过 java -javaagent:(agent.jar) main.jar 进行代理验证了
  */
 public class ByteBuddyTransformAgent {

@@ -1,10 +1,10 @@
 package com.simple.trace.core.transform;
 
 @CustomAnnotation
-public class Bar {
+public class Foo {
 
     public String print() {
-        System.out.println("Bar print");
-        return "Bar print";
+        System.out.println("foo print");
+        return "foo print";
     }
 }
